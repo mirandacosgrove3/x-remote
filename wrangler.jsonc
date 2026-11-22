@@ -11,7 +11,7 @@
     {
       "binding": "TOKENS",
       // Paste the id printed by: npx wrangler kv namespace create TOKENS
-      "id": "PASTE_KV_ID_HERE"
+      "id": "27a99d76e7954bfdbe4f23781b5682b4"
     }
   ],
   "vars": {
