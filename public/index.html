@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#0b0d0c">
+<meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,121 +17,176 @@
 <body>
 <div id="app">
 
-  <header class="top">
-    <button class="console" id="consoleBtn" aria-label="Choose console">
-      <span class="dot" id="dot"></span>
-      <span class="console-name" id="consoleName">No console</span>
-      <span class="ping" id="ping"></span>
+  <!-- ===== status header ===== -->
+  <header class="hud">
+    <div class="title">
+      <div class="title-main">COUCH</div>
+      <div class="title-sub">REMOTE LINK SYSTEM <span class="jp">遠隔操作</span></div>
+    </div>
+    <button class="link-box" id="consoleBtn" aria-label="Console and settings">
+      <span class="lb-row"><span class="lb-key">UNIT</span><span class="lb-val" id="consoleName">NO SIGNAL</span></span>
+      <span class="lb-row"><span class="lb-key">STAT</span><span class="lb-val" id="statTxt">STANDBY</span></span>
+      <span class="lb-row"><span class="lb-key">SYNC</span><span class="lb-val" id="ping">---ms</span></span>
     </button>
-    <div class="top-actions">
-      <button class="icon-btn" id="settingsBtn" aria-label="Settings">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    <div class="hex-col">
+      <button class="hex" id="powerBtn" data-hold="power_off" data-tap="power_on" aria-label="Power: tap on, hold off">
+        <svg viewBox="0 0 40 44"><path class="hx" d="M20 2 37 12v20L20 42 3 32V12z"/><path class="ic" d="M20 12v9M14 16.5a8 8 0 1 0 12 0"/></svg>
       </button>
-      <button class="icon-btn power" data-hold="power_off" data-tap="power_on" aria-label="Power (tap on, hold off)">
-        <svg viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.3 7.3a8 8 0 1 0 11.4 0"/></svg>
+      <button class="hex" id="settingsBtn" aria-label="Settings">
+        <svg viewBox="0 0 40 44"><path class="hx" d="M20 2 37 12v20L20 42 3 32V12z"/><path class="ic" d="M13 16h14M13 22h14M13 28h14"/><circle class="ic" cx="17" cy="16" r="2"/><circle class="ic" cx="24" cy="22" r="2"/><circle class="ic" cx="16" cy="28" r="2"/></svg>
       </button>
     </div>
   </header>
+  <div class="rule"><span></span><i>CH.01 // CLOUD RELAY</i><span></span></div>
 
-  <nav class="sys">
-    <button class="pill" data-act="back" aria-label="Back">
-      <svg viewBox="0 0 24 24"><path d="M10 6 4 12l6 6"/><path d="M4 12h11a5 5 0 0 1 0 10h-2"/></svg><span>Back</span>
-    </button>
-    <button class="pill" data-act="home" aria-label="Home">
-      <svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg><span>Home</span>
-    </button>
-    <button class="pill guide" data-act="key:Guide" aria-label="Guide button">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/></svg><span>Guide</span>
-    </button>
-    <button class="pill" data-act="key:View" aria-label="View">
-      <svg viewBox="0 0 24 24"><rect x="4" y="5" width="11" height="9" rx="1.5"/><rect x="9" y="10" width="11" height="9" rx="1.5"/></svg><span>View</span>
-    </button>
-    <button class="pill" data-act="key:Menu" aria-label="Menu">
-      <svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></svg><span>Menu</span>
-    </button>
-  </nav>
+  <!-- ===== controller ===== -->
+  <main class="deck">
+    <svg id="pad" viewBox="0 0 360 620" preserveAspectRatio="xMidYMid meet" aria-label="Controller">
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M20 0H0V20" fill="none" stroke="currentColor" stroke-opacity=".07" stroke-width=".6"/>
+        </pattern>
+      </defs>
 
-  <main class="stage">
-    <div class="mode-toggle" role="tablist">
-      <button id="modeSwipe" class="on" role="tab">Swipe</button>
-      <button id="modePad" role="tab">D-pad</button>
-    </div>
+      <!-- guide -->
+      <g class="btn" data-act="key:Guide" aria-label="Guide">
+        <circle cx="180" cy="54" r="31" class="shape"/>
+        <circle cx="180" cy="54" r="15" class="inner"/>
+        <circle cx="180" cy="54" r="4" class="dotfill"/>
+        <text x="180" y="100" class="lbl">GUIDE</text>
+      </g>
 
-    <div class="surface" id="surface" aria-label="Swipe to move, tap to select">
-      <div class="surface-hint" id="hint">
-        <span>swipe to move</span>
-        <span>tap = A · hold after swipe = repeat</span>
-      </div>
-      <div class="ripple" id="ripple"></div>
-      <div class="arrow" id="arrow"></div>
-    </div>
+      <!-- view / menu -->
+      <g class="btn" data-act="key:View" aria-label="View">
+        <circle cx="86" cy="122" r="19" class="shape"/>
+        <rect x="76" y="113" width="12" height="9" rx="2" class="glyph"/>
+        <rect x="83" y="119" width="12" height="9" rx="2" class="glyph"/>
+        <text x="86" y="155" class="lbl">VIEW</text>
+      </g>
+      <g class="btn" data-act="key:Menu" aria-label="Menu">
+        <circle cx="274" cy="130" r="19" class="shape"/>
+        <path d="M266 124h16M266 130h16M266 136h16" class="glyph"/>
+        <text x="274" y="163" class="lbl">MENU</text>
+      </g>
 
-    <div class="dpad hidden" id="dpad">
-      <button class="d up" data-rep="key:Up" aria-label="Up"><svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button>
-      <button class="d left" data-rep="key:Left" aria-label="Left"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
-      <button class="d ok" data-act="key:A" aria-label="Select">OK</button>
-      <button class="d right" data-rep="key:Right" aria-label="Right"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
-      <button class="d down" data-rep="key:Down" aria-label="Down"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
-    </div>
+      <!-- wings = volume -->
+      <g class="btn" data-rep="vol_down" aria-label="Volume down">
+        <path class="shape" d="M30 170c0-10 7-14 13-8 16 18 30 30 49 36 6 2 8 6 8 13v6c0 7-4 11-11 11H42c-8 0-12-5-12-12z"/>
+        <text x="62" y="208" class="lbl strong">VOL−</text>
+      </g>
+      <g class="btn" data-rep="vol_up" aria-label="Volume up">
+        <path class="shape" d="M330 170c0-10-7-14-13-8-16 18-30 30-49 36-6 2-8 6-8 13v6c0 7 4 11 11 11h47c8 0 12-5 12-12z"/>
+        <text x="298" y="208" class="lbl strong">VOL+</text>
+      </g>
+
+      <!-- bumpers = media skip -->
+      <g class="btn" data-act="previous" aria-label="Previous">
+        <rect x="30" y="242" width="70" height="24" rx="12" class="shape"/>
+        <text x="65" y="257.5" class="lbl in">◀◀ PREV</text>
+      </g>
+      <g class="btn" data-act="next" aria-label="Next">
+        <rect x="260" y="242" width="70" height="24" rx="12" class="shape"/>
+        <text x="295" y="257.5" class="lbl in">NEXT ▶▶</text>
+      </g>
+
+      <!-- Y -->
+      <g class="btn" data-act="key:Y" aria-label="Y">
+        <circle cx="128" cy="212" r="21" class="shape"/>
+        <text x="128" y="219" class="face">Y</text>
+      </g>
+
+      <!-- d-pad -->
+      <g id="dpad">
+        <path class="shape cross" d="M199 250Q199 238 211 238L237 238Q249 238 249 250L249 293L292 293Q304 293 304 305L304 331Q304 343 292 343L249 343L249 386Q249 398 237 398L211 398Q199 398 199 386L199 343L156 343Q144 343 144 331L144 305Q144 293 156 293L199 293Z"/>
+        <g class="btn seg" data-rep="key:Up" aria-label="Up"><rect x="199" y="238" width="50" height="55" class="hit"/><path class="chev" d="m216 270 8-8 8 8"/></g>
+        <g class="btn seg" data-rep="key:Down" aria-label="Down"><rect x="199" y="343" width="50" height="55" class="hit"/><path class="chev" d="m216 366 8 8 8-8"/></g>
+        <g class="btn seg" data-rep="key:Left" aria-label="Left"><rect x="144" y="293" width="55" height="50" class="hit"/><path class="chev" d="m176 310-8 8 8 8"/></g>
+        <g class="btn seg" data-rep="key:Right" aria-label="Right"><rect x="249" y="293" width="55" height="50" class="hit"/><path class="chev" d="m272 310 8 8-8 8"/></g>
+        <g class="btn seg" data-act="key:A" aria-label="Select"><rect x="199" y="293" width="50" height="50" class="hit"/><circle cx="224" cy="318" r="5" class="dotfill"/></g>
+      </g>
+
+      <!-- X -->
+      <g class="btn" data-act="key:X" aria-label="X">
+        <circle cx="108" cy="352" r="23" class="shape"/>
+        <text x="108" y="360" class="face">X</text>
+      </g>
+
+      <!-- A / B -->
+      <g class="btn" data-act="key:A" aria-label="A">
+        <circle cx="304" cy="418" r="27" class="shape"/>
+        <text x="304" y="428" class="face big">A</text>
+        <text x="304" y="459" class="lbl jp">決定</text>
+      </g>
+      <g class="btn" data-act="key:B" aria-label="B">
+        <circle cx="250" cy="492" r="31" class="shape"/>
+        <text x="250" y="503" class="face big">B</text>
+        <text x="250" y="537" class="lbl jp">戻る</text>
+      </g>
+
+      <!-- touch sensor -->
+      <g id="touch">
+        <rect x="18" y="404" width="190" height="196" rx="16" class="shape sensor"/>
+        <rect x="19" y="405" width="188" height="194" rx="15" fill="url(#grid)" class="gridfill"/>
+        <path class="brk" d="M34 432v-12h12M192 432v-12h-12M34 572v12h12M192 572v12h-12"/>
+        <path class="xhair" d="M113 494v12M107 500h12"/>
+        <text x="40" y="447" class="lbl left dim">TOUCH SENSOR</text>
+        <text x="186" y="447" class="lbl right dim" id="coord">X0.50 Y0.50</text>
+        <text x="113" y="566" class="lbl dim" id="touchHint">SWIPE · TAP = A</text>
+        <text x="113" y="512" class="dir" id="dirTxt"></text>
+        <rect id="rip" x="0" y="0" width="44" height="44" class="rip"/>
+        <rect x="18" y="404" width="190" height="196" rx="16" class="hit" id="touchHit"/>
+      </g>
+    </svg>
   </main>
 
-  <section class="face">
-    <button class="fb x" data-act="key:X">X</button>
-    <button class="fb y" data-act="key:Y">Y</button>
-    <button class="fb b" data-act="key:B">B</button>
-    <button class="fb a" data-act="key:A">A</button>
-  </section>
-
-  <footer class="dock">
-    <button class="dock-btn" data-rep="vol_down" aria-label="Volume down"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 12h4"/></svg></button>
-    <button class="dock-btn" id="muteBtn" aria-label="Mute"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="m17 9 4 6M21 9l-4 6"/></svg></button>
-    <button class="dock-btn" data-rep="vol_up" aria-label="Volume up"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 12h4M19 10v4"/></svg></button>
-    <span class="dock-sep"></span>
-    <button class="dock-btn" data-act="previous" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M6 5v14"/><path d="M19 5 9 12l10 7z"/></svg></button>
-    <button class="dock-btn" id="playBtn" aria-label="Play / pause"><svg viewBox="0 0 24 24"><path d="M6 5v14l7-7z"/><path d="M16 6v12M20 6v12"/></svg></button>
-    <button class="dock-btn" data-act="next" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M18 5v14"/><path d="M5 5l10 7-10 7z"/></svg></button>
-    <span class="dock-sep"></span>
-    <button class="dock-btn" id="kbBtn" aria-label="Type text"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h1M11 10h1M15 10h2M7 14h10"/></svg></button>
+  <!-- ===== utility strip ===== -->
+  <footer class="strip">
+    <button class="cell" data-act="home"><b>HOME</b><i>ホーム</i></button>
+    <button class="cell" id="muteBtn"><b id="muteTxt">MUTE</b><i>消音</i></button>
+    <button class="cell" id="playBtn"><b>PLAY/PAUSE</b><i>再生</i></button>
+    <button class="cell" id="kbBtn"><b>TYPE</b><i>入力</i></button>
   </footer>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast"><span class="t-tag" id="toastTag">INFO</span><span id="toastMsg"></span></div>
 
   <!-- keyboard sheet -->
   <div class="sheet-backdrop hidden" id="kbSheet">
     <div class="sheet">
-      <div class="sheet-head"><h2>Type on TV</h2><button class="x-btn" data-close>Done</button></div>
-      <p class="muted">Focus a text box on the console first, then send.</p>
-      <textarea id="kbText" rows="2" placeholder="Search, password-free text, URLs…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
-      <button class="primary" id="kbSend">Send to console</button>
+      <div class="hazard"></div>
+      <div class="sheet-head"><h2>TEXT INPUT <span class="jp">文字入力</span></h2><button class="x-btn" data-close>CLOSE</button></div>
+      <p class="muted">Focus a text field on the console, then transmit.</p>
+      <textarea id="kbText" rows="2" placeholder="&gt; _" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+      <button class="primary" id="kbSend">TRANSMIT</button>
     </div>
   </div>
 
   <!-- settings sheet -->
   <div class="sheet-backdrop hidden" id="setSheet">
     <div class="sheet">
-      <div class="sheet-head"><h2>Settings</h2><button class="x-btn" data-close>Done</button></div>
+      <div class="hazard"></div>
+      <div class="sheet-head"><h2>SYSTEM <span class="jp">設定</span></h2><button class="x-btn" data-close>CLOSE</button></div>
 
       <label class="field">
-        <span>Remote PIN</span>
-        <input id="pinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="The APP_PIN you set">
+        <span>ACCESS CODE</span>
+        <input id="pinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="APP_PIN">
       </label>
-      <button class="secondary" id="pinSave">Save PIN</button>
+      <button class="secondary" id="pinSave">SAVE CODE</button>
 
       <div class="block">
-        <div class="row"><span>Microsoft account</span><span class="badge" id="linkBadge">checking…</span></div>
-        <a class="primary as-btn" id="linkBtn" href="#">Sign in with Microsoft</a>
-        <p class="muted small">Tip: do this once in regular Safari. The login lives on your Worker, so the home-screen app picks it up automatically.</p>
+        <div class="row"><span>MICROSOFT LINK</span><span class="badge" id="linkBadge">CHECKING</span></div>
+        <a class="primary as-btn" id="linkBtn" href="#">SIGN IN WITH MICROSOFT</a>
+        <p class="muted small">Do this once in regular Safari. The link is stored on the server, so the home-screen app inherits it.</p>
       </div>
 
       <div class="block">
-        <div class="row"><span>Console</span><button class="link" id="refreshConsoles">Refresh</button></div>
+        <div class="row"><span>UNIT SELECT</span><button class="link" id="refreshConsoles">RESCAN</button></div>
         <div id="consoleList" class="console-list"><p class="muted small">Sign in to load consoles.</p></div>
       </div>
 
-      <div class="block danger-zone">
-        <button class="secondary" id="rebootBtn">Restart console</button>
-        <button class="secondary" id="offBtn">Turn console off</button>
-        <button class="ghost" id="unlinkBtn">Unlink Microsoft account</button>
+      <div class="block">
+        <button class="secondary" id="rebootBtn">RESTART UNIT</button>
+        <button class="secondary" id="offBtn">SHUT DOWN UNIT</button>
+        <button class="ghost" id="unlinkBtn">SEVER MICROSOFT LINK</button>
       </div>
     </div>
   </div>

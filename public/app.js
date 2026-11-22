@@ -19,7 +19,8 @@
   let toastT;
   function toast(msg, err = false) {
     const t = $("#toast");
-    t.textContent = msg;
+    $("#toastTag").textContent = err ? "WARNING" : "INFO";
+    $("#toastMsg").textContent = msg;
     t.classList.toggle("err", err);
     t.classList.add("show");
     clearTimeout(toastT);
@@ -65,7 +66,7 @@
       const t0 = performance.now();
       try {
         const res = await api("/api/cmd", { method: "POST", body: JSON.stringify({ consoleId: consoleSel.id, action, value }) });
-        $("#ping").textContent = `${Math.round(performance.now() - t0)}ms`;
+        $("#ping").textContent = `${String(Math.round(performance.now() - t0)).padStart(3, "0")}ms`;
         if (res.ok === false) toast("Console reported an error", true);
         return res;
       } catch (e) {
@@ -106,7 +107,7 @@
     el.addEventListener("pointerdown", () => {
       held = false;
       el.classList.add("pressed");
-      timer = setTimeout(() => { held = true; toast("Turning off…"); send(el.dataset.hold); }, 750);
+      timer = setTimeout(() => { held = true; toast("SHUTDOWN SEQUENCE"); send(el.dataset.hold); }, 750);
     });
     const end = () => {
       clearTimeout(timer);
@@ -114,7 +115,7 @@
     };
     el.addEventListener("pointerup", () => {
       end();
-      if (!held) { toast("Waking console…"); send(el.dataset.tap); }
+      if (!held) { toast("WAKE SIGNAL SENT"); send(el.dataset.tap); }
       held = true;
     });
     el.addEventListener("pointercancel", () => { end(); held = true; });
@@ -122,72 +123,79 @@
 
   // ---- toggles ----
   let muted = false, playing = true;
-  $("#muteBtn").addEventListener("click", (e) => { flash(e.currentTarget); muted = !muted; send(muted ? "mute" : "unmute"); toast(muted ? "Muted" : "Unmuted"); });
+  $("#muteBtn").addEventListener("click", (e) => {
+    flash(e.currentTarget); muted = !muted;
+    send(muted ? "mute" : "unmute");
+    $("#muteTxt").textContent = muted ? "UNMUTE" : "MUTE";
+    e.currentTarget.classList.toggle("on", muted);
+  });
   $("#playBtn").addEventListener("click", (e) => { flash(e.currentTarget); playing = !playing; send(playing ? "play" : "pause"); });
 
-  // ---- swipe surface ----
-  const surf = $("#surface"), arrow = $("#arrow"), ripple = $("#ripple");
-  const ROT = { Up: 0, Right: 90, Down: 180, Left: 270 };
+  // ---- touch sensor (inside the SVG) ----
+  const svg = $("#pad"), touch = $("#touch"), hit = $("#touchHit");
+  const dirTxt = $("#dirTxt"), rip = $("#rip"), coord = $("#coord");
+  const GLYPH = { Up: "▲ UP", Down: "▼ DOWN", Left: "◀ LEFT", Right: "RIGHT ▶" };
+  const box = { x: 18, y: 404, w: 190, h: 196 };
   let g = null;
 
+  function toSvg(e) {
+    const m = svg.getScreenCTM();
+    if (!m) return { x: 0, y: 0 };
+    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
+    return { x: p.x, y: p.y };
+  }
+  function showCoord(e) {
+    const p = toSvg(e);
+    const nx = Math.min(1, Math.max(0, (p.x - box.x) / box.w));
+    const ny = Math.min(1, Math.max(0, (p.y - box.y) / box.h));
+    coord.textContent = `X${nx.toFixed(2)} Y${ny.toFixed(2)}`;
+  }
   function fireDir(dir) {
     send(`key:${dir}`);
-    arrow.style.transform = `rotate(${ROT[dir]}deg)`;
-    arrow.classList.remove("go"); void arrow.offsetWidth; arrow.classList.add("go");
-    surf.classList.add("used");
+    dirTxt.textContent = GLYPH[dir];
+    dirTxt.classList.remove("go", "hold"); void dirTxt.getBBox(); dirTxt.classList.add("go");
   }
   function armHold() {
     clearTimeout(g.holdT); clearInterval(g.repT);
     g.holdT = setTimeout(() => {
-      arrow.classList.add("hold");
+      dirTxt.classList.remove("go"); dirTxt.classList.add("hold");
       g.repT = setInterval(() => send(`key:${g.dir}`), 160);
     }, 380);
   }
-  surf.addEventListener("pointerdown", (e) => {
-    surf.setPointerCapture?.(e.pointerId);
+  hit.addEventListener("pointerdown", (e) => {
+    hit.setPointerCapture?.(e.pointerId);
+    touch.classList.add("active");
+    showCoord(e);
     g = { x0: e.clientX, y0: e.clientY, ax: e.clientX, ay: e.clientY, t0: Date.now(), fired: false, dir: null };
   });
-  surf.addEventListener("pointermove", (e) => {
+  hit.addEventListener("pointermove", (e) => {
     if (!g) return;
+    showCoord(e);
     const dx = e.clientX - g.ax, dy = e.clientY - g.ay;
-    const dist = Math.hypot(dx, dy);
     const need = g.fired ? 56 : 26; // first swipe triggers fast, follow-up steps need more travel
-    if (dist < need) return;
+    if (Math.hypot(dx, dy) < need) return;
     const dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "Right" : "Left") : (dy > 0 ? "Down" : "Up");
     g.fired = true; g.dir = dir; g.ax = e.clientX; g.ay = e.clientY;
-    arrow.classList.remove("hold");
     fireDir(dir);
     armHold();
   });
   function endGesture(e, cancelled) {
     if (!g) return;
     clearTimeout(g.holdT); clearInterval(g.repT);
-    arrow.classList.remove("hold");
+    dirTxt.classList.remove("hold");
+    touch.classList.remove("active");
     const moved = Math.hypot(e.clientX - g.x0, e.clientY - g.y0);
     if (!cancelled && !g.fired && moved < 14 && Date.now() - g.t0 < 450) {
-      const r = surf.getBoundingClientRect();
-      ripple.style.left = `${e.clientX - r.left}px`;
-      ripple.style.top = `${e.clientY - r.top}px`;
-      ripple.classList.remove("go"); void ripple.offsetWidth; ripple.classList.add("go");
-      surf.classList.add("used");
+      const p = toSvg(e);
+      rip.setAttribute("x", p.x - 22); rip.setAttribute("y", p.y - 22);
+      rip.classList.remove("go"); void rip.getBBox(); rip.classList.add("go");
+      dirTxt.textContent = "◆ A"; dirTxt.classList.remove("go"); void dirTxt.getBBox(); dirTxt.classList.add("go");
       send("key:A");
     }
     g = null;
   }
-  surf.addEventListener("pointerup", (e) => endGesture(e, false));
-  surf.addEventListener("pointercancel", (e) => endGesture(e, true));
-
-  // ---- mode toggle ----
-  function setMode(m) {
-    store.set("mode", m);
-    $("#modeSwipe").classList.toggle("on", m === "swipe");
-    $("#modePad").classList.toggle("on", m === "pad");
-    surf.classList.toggle("hidden", m !== "swipe");
-    $("#dpad").classList.toggle("hidden", m !== "pad");
-  }
-  $("#modeSwipe").addEventListener("click", () => setMode("swipe"));
-  $("#modePad").addEventListener("click", () => setMode("pad"));
-  setMode(store.get("mode", "swipe"));
+  hit.addEventListener("pointerup", (e) => endGesture(e, false));
+  hit.addEventListener("pointercancel", (e) => endGesture(e, true));
 
   // ---- sheets ----
   function openSheet(id) { $(id).classList.remove("hidden"); }
@@ -200,7 +208,7 @@
     const v = $("#kbText").value;
     if (!v) return;
     const res = await send("text", v);
-    if (res) { toast("Sent"); $("#kbText").value = ""; }
+    if (res) { toast("TRANSMITTED"); $("#kbText").value = ""; }
   });
 
   function openSettings() {
@@ -214,7 +222,7 @@
   $("#pinSave").addEventListener("click", () => {
     pin = $("#pinInput").value.trim();
     store.set("pin", pin);
-    toast("PIN saved");
+    toast("ACCESS CODE STORED");
     refreshStatus();
   });
 
@@ -231,15 +239,15 @@
 
   async function refreshStatus() {
     const badge = $("#linkBadge");
-    if (!pin) { badge.textContent = "set PIN first"; badge.classList.remove("ok"); return; }
+    if (!pin) { badge.textContent = "NO CODE"; badge.classList.remove("ok"); return; }
     try {
       const s = await api("/api/status");
       linked = s.linked;
-      badge.textContent = s.linked ? (s.mock ? "linked (mock)" : "linked") : "not linked";
+      badge.textContent = s.linked ? (s.mock ? "LINKED · MOCK" : "LINKED") : "NOT LINKED";
       badge.classList.toggle("ok", s.linked);
       if (s.linked) loadConsoles();
     } catch (e) {
-      badge.textContent = e.code === "bad_pin" ? "wrong PIN" : "offline";
+      badge.textContent = e.code === "bad_pin" ? "CODE REJECTED" : "OFFLINE";
       badge.classList.remove("ok");
     }
   }
@@ -280,9 +288,11 @@
     paintConsole();
   }
   function paintConsole() {
-    $("#consoleName").textContent = consoleSel ? consoleSel.name : "No console";
-    const d = $("#dot");
-    d.className = "dot" + (consoleSel ? (consoleSel.power === "On" ? " on" : " off") : "");
+    $("#consoleName").textContent = consoleSel ? consoleSel.name.toUpperCase() : "NO SIGNAL";
+    const st = $("#statTxt");
+    const on = consoleSel && consoleSel.power === "On";
+    st.textContent = !consoleSel ? "STANDBY" : on ? "ACTIVE" : (consoleSel.power || "ASLEEP").toUpperCase();
+    st.className = "lb-val " + (on ? "ok" : consoleSel ? "warn" : "");
   }
 
   // Two-tap confirm for the drastic stuff (no browser dialogs).
@@ -294,10 +304,10 @@
       setTimeout(() => { delete btn.dataset.armed; btn.textContent = orig; }, 2500);
     });
   }
-  confirmTap($("#rebootBtn"), "Tap again to restart", () => { send("reboot"); toast("Restarting…"); });
-  confirmTap($("#offBtn"), "Tap again to turn off", () => { send("power_off"); toast("Turning off…"); });
-  confirmTap($("#unlinkBtn"), "Tap again to unlink", async () => {
-    try { await api("/api/unlink", { method: "POST" }); toast("Unlinked"); refreshStatus(); } catch (e) { toast(explain(e), true); }
+  confirmTap($("#rebootBtn"), "CONFIRM RESTART", () => { send("reboot"); toast("RESTART SEQUENCE"); });
+  confirmTap($("#offBtn"), "CONFIRM SHUTDOWN", () => { send("power_off"); toast("SHUTDOWN SEQUENCE"); });
+  confirmTap($("#unlinkBtn"), "CONFIRM SEVER", async () => {
+    try { await api("/api/unlink", { method: "POST" }); toast("LINK SEVERED"); refreshStatus(); } catch (e) { toast(explain(e), true); }
   });
 
   // ---- boot ----
@@ -305,7 +315,7 @@
   const params = new URLSearchParams(location.search);
   if (params.get("linked")) {
     history.replaceState(null, "", "/");
-    toast("Microsoft account linked");
+    toast("MICROSOFT LINK ESTABLISHED");
     openSettings();
   } else if (!pin || !consoleSel) {
     openSettings();
