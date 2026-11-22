@@ -21,7 +21,6 @@
   <header class="hud">
     <div class="title">
       <div class="title-main">COUCH</div>
-      <div class="title-sub">REMOTE LINK SYSTEM <span class="jp">遠隔操作</span></div>
     </div>
     <button class="link-box" id="consoleBtn" aria-label="Console and settings">
       <span class="lb-row"><span class="lb-key">UNIT</span><span class="lb-val" id="consoleName">NO SIGNAL</span></span>
@@ -37,115 +36,84 @@
       </button>
     </div>
   </header>
-  <div class="rule"><span></span><i>CH.01 // CLOUD RELAY</i><span></span></div>
 
   <!-- ===== controller ===== -->
   <main class="deck">
-    <svg id="pad" viewBox="0 0 360 620" preserveAspectRatio="xMidYMid meet" aria-label="Controller">
+    <svg id="pad" viewBox="0 0 360 412" preserveAspectRatio="xMidYMax meet" aria-label="Controller">
       <defs>
-        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-          <path d="M20 0H0V20" fill="none" stroke="currentColor" stroke-opacity=".07" stroke-width=".6"/>
+        <pattern id="grid" width="16" height="16" patternUnits="userSpaceOnUse">
+          <path d="M16 0H0V16" fill="none" stroke="currentColor" stroke-opacity=".07" stroke-width=".6"/>
         </pattern>
       </defs>
 
-      <!-- guide -->
       <g class="btn" data-act="key:Guide" aria-label="Guide">
-        <circle cx="180" cy="54" r="31" class="shape"/>
-        <circle cx="180" cy="54" r="15" class="inner"/>
-        <circle cx="180" cy="54" r="4" class="dotfill"/>
-        <text x="180" y="100" class="lbl">GUIDE</text>
+        <circle cx="180" cy="40" r="30" class="shape"/>
+        <circle cx="180" cy="40" r="14" class="inner"/>
+        <circle cx="180" cy="40" r="4" class="dotfill"/>
       </g>
 
-      <!-- view / menu -->
       <g class="btn" data-act="key:View" aria-label="View">
-        <circle cx="86" cy="122" r="19" class="shape"/>
-        <rect x="76" y="113" width="12" height="9" rx="2" class="glyph"/>
-        <rect x="83" y="119" width="12" height="9" rx="2" class="glyph"/>
-        <text x="86" y="155" class="lbl">VIEW</text>
+        <circle cx="92" cy="94" r="18" class="shape"/>
+        <rect x="82" y="86" width="12" height="9" rx="2" class="glyph"/>
+        <rect x="89" y="92" width="12" height="9" rx="2" class="glyph"/>
       </g>
       <g class="btn" data-act="key:Menu" aria-label="Menu">
-        <circle cx="274" cy="130" r="19" class="shape"/>
-        <path d="M266 124h16M266 130h16M266 136h16" class="glyph"/>
-        <text x="274" y="163" class="lbl">MENU</text>
+        <circle cx="266" cy="106" r="18" class="shape"/>
+        <path d="M258 100h16M258 106h16M258 112h16" class="glyph"/>
       </g>
 
-      <!-- wings = volume -->
       <g class="btn" data-rep="vol_down" aria-label="Volume down">
-        <path class="shape" d="M30 170c0-10 7-14 13-8 16 18 30 30 49 36 6 2 8 6 8 13v6c0 7-4 11-11 11H42c-8 0-12-5-12-12z"/>
-        <text x="62" y="208" class="lbl strong">VOL−</text>
+        <path class="shape" d="M21 124c0-10 7-13 13-7 14 16 28 27 45 33 6 2 10 6 10 12v6c0 7-4 12-11 12H32c-7 0-11-5-11-12z"/>
       </g>
       <g class="btn" data-rep="vol_up" aria-label="Volume up">
-        <path class="shape" d="M330 170c0-10-7-14-13-8-16 18-30 30-49 36-6 2-8 6-8 13v6c0 7 4 11 11 11h47c8 0 12-5 12-12z"/>
-        <text x="298" y="208" class="lbl strong">VOL+</text>
+        <path class="shape" d="M339 124c0-10-7-13-13-7-14 16-28 27-45 33-6 2-10 6-10 12v6c0 7 4 12 11 12h46c7 0 11-5 11-12z"/>
       </g>
 
-      <!-- bumpers = media skip -->
       <g class="btn" data-act="previous" aria-label="Previous">
-        <rect x="30" y="242" width="70" height="24" rx="12" class="shape"/>
-        <text x="65" y="257.5" class="lbl in">◀◀ PREV</text>
+        <rect x="21" y="191" width="68" height="23" rx="11.5" class="shape"/>
       </g>
       <g class="btn" data-act="next" aria-label="Next">
-        <rect x="260" y="242" width="70" height="24" rx="12" class="shape"/>
-        <text x="295" y="257.5" class="lbl in">NEXT ▶▶</text>
+        <rect x="271" y="191" width="68" height="23" rx="11.5" class="shape"/>
       </g>
 
-      <!-- Y -->
       <g class="btn" data-act="key:Y" aria-label="Y">
-        <circle cx="128" cy="212" r="21" class="shape"/>
-        <text x="128" y="219" class="face">Y</text>
+        <circle cx="129" cy="157" r="20" class="shape"/>
+        <text x="129" y="164.5" class="face">Y</text>
       </g>
 
-      <!-- d-pad -->
       <g id="dpad">
-        <path class="shape cross" d="M199 250Q199 238 211 238L237 238Q249 238 249 250L249 293L292 293Q304 293 304 305L304 331Q304 343 292 343L249 343L249 386Q249 398 237 398L211 398Q199 398 199 386L199 343L156 343Q144 343 144 331L144 305Q144 293 156 293L199 293Z"/>
-        <g class="btn seg" data-rep="key:Up" aria-label="Up"><rect x="199" y="238" width="50" height="55" class="hit"/><path class="chev" d="m216 270 8-8 8 8"/></g>
-        <g class="btn seg" data-rep="key:Down" aria-label="Down"><rect x="199" y="343" width="50" height="55" class="hit"/><path class="chev" d="m216 366 8 8 8-8"/></g>
-        <g class="btn seg" data-rep="key:Left" aria-label="Left"><rect x="144" y="293" width="55" height="50" class="hit"/><path class="chev" d="m176 310-8 8 8 8"/></g>
-        <g class="btn seg" data-rep="key:Right" aria-label="Right"><rect x="249" y="293" width="55" height="50" class="hit"/><path class="chev" d="m272 310 8 8-8 8"/></g>
-        <g class="btn seg" data-act="key:A" aria-label="Select"><rect x="199" y="293" width="50" height="50" class="hit"/><circle cx="224" cy="318" r="5" class="dotfill"/></g>
+        <path class="shape cross" d="M179 180Q179 170 189 170L217 170Q227 170 227 180L227 215L262 215Q272 215 272 225L272 253Q272 263 262 263L227 263L227 298Q227 308 217 308L189 308Q179 308 179 298L179 263L144 263Q134 263 134 253L134 225Q134 215 144 215L179 215Z"/>
+        <g class="btn seg" id="segUp" data-rep="key:Up" aria-label="Up"><rect x="179" y="170" width="48" height="45" class="hit"/><path class="chev" d="m196 196 7-7 7 7"/></g>
+        <g class="btn seg" id="segDown" data-rep="key:Down" aria-label="Down"><rect x="179" y="263" width="48" height="45" class="hit"/><path class="chev" d="m196 282 7 7 7-7"/></g>
+        <g class="btn seg" id="segLeft" data-rep="key:Left" aria-label="Left"><rect x="134" y="215" width="45" height="48" class="hit"/><path class="chev" d="m160 232-7 7 7 7"/></g>
+        <g class="btn seg" id="segRight" data-rep="key:Right" aria-label="Right"><rect x="227" y="215" width="45" height="48" class="hit"/><path class="chev" d="m246 232 7 7-7 7"/></g>
+        <g class="btn seg" data-act="key:A" aria-label="Select"><rect x="179" y="215" width="48" height="48" class="hit"/><circle cx="203" cy="239" r="4" class="dotfill"/></g>
       </g>
 
-      <!-- X -->
       <g class="btn" data-act="key:X" aria-label="X">
-        <circle cx="108" cy="352" r="23" class="shape"/>
-        <text x="108" y="360" class="face">X</text>
+        <circle cx="99" cy="268" r="20" class="shape"/>
+        <text x="99" y="275.5" class="face">X</text>
       </g>
 
-      <!-- A / B -->
       <g class="btn" data-act="key:A" aria-label="A">
-        <circle cx="304" cy="418" r="27" class="shape"/>
-        <text x="304" y="428" class="face big">A</text>
-        <text x="304" y="459" class="lbl jp">決定</text>
+        <circle cx="295" cy="297" r="25" class="shape"/>
+        <text x="295" y="306" class="face big">A</text>
       </g>
       <g class="btn" data-act="key:B" aria-label="B">
-        <circle cx="250" cy="492" r="31" class="shape"/>
-        <text x="250" y="503" class="face big">B</text>
-        <text x="250" y="537" class="lbl jp">戻る</text>
+        <circle cx="247" cy="355" r="29" class="shape"/>
+        <text x="247" y="365" class="face big">B</text>
       </g>
 
-      <!-- touch sensor -->
       <g id="touch">
-        <rect x="18" y="404" width="190" height="196" rx="16" class="shape sensor"/>
-        <rect x="19" y="405" width="188" height="194" rx="15" fill="url(#grid)" class="gridfill"/>
-        <path class="brk" d="M34 432v-12h12M192 432v-12h-12M34 572v12h12M192 572v12h-12"/>
-        <path class="xhair" d="M113 494v12M107 500h12"/>
-        <text x="40" y="447" class="lbl left dim">TOUCH SENSOR</text>
-        <text x="186" y="447" class="lbl right dim" id="coord">X0.50 Y0.50</text>
-        <text x="113" y="566" class="lbl dim" id="touchHint">SWIPE · TAP = A</text>
-        <text x="113" y="512" class="dir" id="dirTxt"></text>
-        <rect id="rip" x="0" y="0" width="44" height="44" class="rip"/>
-        <rect x="18" y="404" width="190" height="196" rx="16" class="hit" id="touchHit"/>
+        <rect x="16" y="309" width="160" height="94" rx="13" class="shape sensor"/>
+        <rect x="17" y="310" width="158" height="92" rx="12" fill="url(#grid)" class="gridfill"/>
+        <path class="brk" d="M28 329v-10h10M164 329v-10h-10M28 383v10h10M164 383v10h-10"/>
+        <path class="xhair" d="M96 350v10M91 355h10"/>
+        <rect id="rip" x="0" y="0" width="36" height="36" class="rip"/>
+        <rect x="16" y="309" width="160" height="94" rx="13" class="hit" id="touchHit"/>
       </g>
     </svg>
   </main>
-
-  <!-- ===== utility strip ===== -->
-  <footer class="strip">
-    <button class="cell" data-act="home"><b>HOME</b><i>ホーム</i></button>
-    <button class="cell" id="muteBtn"><b id="muteTxt">MUTE</b><i>消音</i></button>
-    <button class="cell" id="playBtn"><b>PLAY/PAUSE</b><i>再生</i></button>
-    <button class="cell" id="kbBtn"><b>TYPE</b><i>入力</i></button>
-  </footer>
 
   <div class="toast" id="toast"><span class="t-tag" id="toastTag">INFO</span><span id="toastMsg"></span></div>
 
@@ -153,7 +121,7 @@
   <div class="sheet-backdrop hidden" id="kbSheet">
     <div class="sheet">
       <div class="hazard"></div>
-      <div class="sheet-head"><h2>TEXT INPUT <span class="jp">文字入力</span></h2><button class="x-btn" data-close>CLOSE</button></div>
+      <div class="sheet-head"><h2>TEXT INPUT</h2><button class="x-btn" data-close>CLOSE</button></div>
       <p class="muted">Focus a text field on the console, then transmit.</p>
       <textarea id="kbText" rows="2" placeholder="&gt; _" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
       <button class="primary" id="kbSend">TRANSMIT</button>
@@ -164,7 +132,14 @@
   <div class="sheet-backdrop hidden" id="setSheet">
     <div class="sheet">
       <div class="hazard"></div>
-      <div class="sheet-head"><h2>SYSTEM <span class="jp">設定</span></h2><button class="x-btn" data-close>CLOSE</button></div>
+      <div class="sheet-head"><h2>SYSTEM</h2><button class="x-btn" data-close>CLOSE</button></div>
+
+      <div class="quick">
+        <button class="q" data-act="home">HOME</button>
+        <button class="q" id="muteBtn"><span id="muteTxt">MUTE</span></button>
+        <button class="q" id="playBtn">PLAY/PAUSE</button>
+        <button class="q" id="kbBtn">TYPE</button>
+      </div>
 
       <label class="field">
         <span>ACCESS CODE</span>

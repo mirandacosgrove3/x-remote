@@ -132,10 +132,8 @@
   $("#playBtn").addEventListener("click", (e) => { flash(e.currentTarget); playing = !playing; send(playing ? "play" : "pause"); });
 
   // ---- touch sensor (inside the SVG) ----
-  const svg = $("#pad"), touch = $("#touch"), hit = $("#touchHit");
-  const dirTxt = $("#dirTxt"), rip = $("#rip"), coord = $("#coord");
-  const GLYPH = { Up: "▲ UP", Down: "▼ DOWN", Left: "◀ LEFT", Right: "RIGHT ▶" };
-  const box = { x: 18, y: 404, w: 190, h: 196 };
+  const svg = $("#pad"), touch = $("#touch"), hit = $("#touchHit"), rip = $("#rip");
+  const SEG = { Up: "#segUp", Down: "#segDown", Left: "#segLeft", Right: "#segRight" };
   let g = null;
 
   function toSvg(e) {
@@ -144,52 +142,46 @@
     const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
     return { x: p.x, y: p.y };
   }
-  function showCoord(e) {
-    const p = toSvg(e);
-    const nx = Math.min(1, Math.max(0, (p.x - box.x) / box.w));
-    const ny = Math.min(1, Math.max(0, (p.y - box.y) / box.h));
-    coord.textContent = `X${nx.toFixed(2)} Y${ny.toFixed(2)}`;
-  }
-  function fireDir(dir) {
-    send(`key:${dir}`);
-    dirTxt.textContent = GLYPH[dir];
-    dirTxt.classList.remove("go", "hold"); void dirTxt.getBBox(); dirTxt.classList.add("go");
+  function lightSeg(dir, hold) {
+    Object.values(SEG).forEach((s) => $(s).classList.remove("pressed"));
+    if (!dir) return;
+    const el = $(SEG[dir]);
+    el.classList.add("pressed");
+    if (!hold) setTimeout(() => { if (!g || !g.repT) el.classList.remove("pressed"); }, 150);
   }
   function armHold() {
-    clearTimeout(g.holdT); clearInterval(g.repT);
+    clearTimeout(g.holdT); clearInterval(g.repT); g.repT = null;
     g.holdT = setTimeout(() => {
-      dirTxt.classList.remove("go"); dirTxt.classList.add("hold");
+      lightSeg(g.dir, true);
       g.repT = setInterval(() => send(`key:${g.dir}`), 160);
     }, 380);
   }
   hit.addEventListener("pointerdown", (e) => {
     hit.setPointerCapture?.(e.pointerId);
     touch.classList.add("active");
-    showCoord(e);
-    g = { x0: e.clientX, y0: e.clientY, ax: e.clientX, ay: e.clientY, t0: Date.now(), fired: false, dir: null };
+    g = { x0: e.clientX, y0: e.clientY, ax: e.clientX, ay: e.clientY, t0: Date.now(), fired: false, dir: null, repT: null };
   });
   hit.addEventListener("pointermove", (e) => {
     if (!g) return;
-    showCoord(e);
     const dx = e.clientX - g.ax, dy = e.clientY - g.ay;
-    const need = g.fired ? 56 : 26; // first swipe triggers fast, follow-up steps need more travel
+    const need = g.fired ? 48 : 22; // first swipe triggers fast, follow-up steps need more travel
     if (Math.hypot(dx, dy) < need) return;
     const dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "Right" : "Left") : (dy > 0 ? "Down" : "Up");
     g.fired = true; g.dir = dir; g.ax = e.clientX; g.ay = e.clientY;
-    fireDir(dir);
+    send(`key:${dir}`);
+    lightSeg(dir, false);
     armHold();
   });
   function endGesture(e, cancelled) {
     if (!g) return;
     clearTimeout(g.holdT); clearInterval(g.repT);
-    dirTxt.classList.remove("hold");
+    lightSeg(null);
     touch.classList.remove("active");
     const moved = Math.hypot(e.clientX - g.x0, e.clientY - g.y0);
-    if (!cancelled && !g.fired && moved < 14 && Date.now() - g.t0 < 450) {
+    if (!cancelled && !g.fired && moved < 12 && Date.now() - g.t0 < 450) {
       const p = toSvg(e);
-      rip.setAttribute("x", p.x - 22); rip.setAttribute("y", p.y - 22);
+      rip.setAttribute("x", p.x - 18); rip.setAttribute("y", p.y - 18);
       rip.classList.remove("go"); void rip.getBBox(); rip.classList.add("go");
-      dirTxt.textContent = "◆ A"; dirTxt.classList.remove("go"); void dirTxt.getBBox(); dirTxt.classList.add("go");
       send("key:A");
     }
     g = null;
@@ -203,7 +195,7 @@
   $$("[data-close]").forEach((b) => b.addEventListener("click", closeSheets));
   $$(".sheet-backdrop").forEach((s) => s.addEventListener("click", (e) => { if (e.target === s) closeSheets(); }));
 
-  $("#kbBtn").addEventListener("click", () => { openSheet("#kbSheet"); setTimeout(() => $("#kbText").focus(), 50); });
+  $("#kbBtn").addEventListener("click", () => { closeSheets(); openSheet("#kbSheet"); setTimeout(() => $("#kbText").focus(), 50); });
   $("#kbSend").addEventListener("click", async () => {
     const v = $("#kbText").value;
     if (!v) return;

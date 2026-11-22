@@ -1,6 +1,6 @@
 // Caches the remote's shell so it opens instantly, even on bad signal.
 // API calls always go to the network.
-const CACHE = "couch-v2";
+const CACHE = "couch-v3";
 const SHELL = ["/", "/index.html", "/app.css", "/app.js", "/manifest.webmanifest", "/icon-192.png", "/icon-180.png"];
 
 self.addEventListener("install", (e) => {
