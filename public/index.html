@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0b0d0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Couch">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="icon" href="/icon-192.png">
+<link rel="stylesheet" href="/app.css">
+<title>Couch</title>
+</head>
+<body>
+<div id="app">
+
+  <header class="top">
+    <button class="console" id="consoleBtn" aria-label="Choose console">
+      <span class="dot" id="dot"></span>
+      <span class="console-name" id="consoleName">No console</span>
+      <span class="ping" id="ping"></span>
+    </button>
+    <div class="top-actions">
+      <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+      <button class="icon-btn power" data-hold="power_off" data-tap="power_on" aria-label="Power (tap on, hold off)">
+        <svg viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.3 7.3a8 8 0 1 0 11.4 0"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <nav class="sys">
+    <button class="pill" data-act="back" aria-label="Back">
+      <svg viewBox="0 0 24 24"><path d="M10 6 4 12l6 6"/><path d="M4 12h11a5 5 0 0 1 0 10h-2"/></svg><span>Back</span>
+    </button>
+    <button class="pill" data-act="home" aria-label="Home">
+      <svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg><span>Home</span>
+    </button>
+    <button class="pill guide" data-act="key:Guide" aria-label="Guide button">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/></svg><span>Guide</span>
+    </button>
+    <button class="pill" data-act="key:View" aria-label="View">
+      <svg viewBox="0 0 24 24"><rect x="4" y="5" width="11" height="9" rx="1.5"/><rect x="9" y="10" width="11" height="9" rx="1.5"/></svg><span>View</span>
+    </button>
+    <button class="pill" data-act="key:Menu" aria-label="Menu">
+      <svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></svg><span>Menu</span>
+    </button>
+  </nav>
+
+  <main class="stage">
+    <div class="mode-toggle" role="tablist">
+      <button id="modeSwipe" class="on" role="tab">Swipe</button>
+      <button id="modePad" role="tab">D-pad</button>
+    </div>
+
+    <div class="surface" id="surface" aria-label="Swipe to move, tap to select">
+      <div class="surface-hint" id="hint">
+        <span>swipe to move</span>
+        <span>tap = A · hold after swipe = repeat</span>
+      </div>
+      <div class="ripple" id="ripple"></div>
+      <div class="arrow" id="arrow"></div>
+    </div>
+
+    <div class="dpad hidden" id="dpad">
+      <button class="d up" data-rep="key:Up" aria-label="Up"><svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button>
+      <button class="d left" data-rep="key:Left" aria-label="Left"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
+      <button class="d ok" data-act="key:A" aria-label="Select">OK</button>
+      <button class="d right" data-rep="key:Right" aria-label="Right"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
+      <button class="d down" data-rep="key:Down" aria-label="Down"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+    </div>
+  </main>
+
+  <section class="face">
+    <button class="fb x" data-act="key:X">X</button>
+    <button class="fb y" data-act="key:Y">Y</button>
+    <button class="fb b" data-act="key:B">B</button>
+    <button class="fb a" data-act="key:A">A</button>
+  </section>
+
+  <footer class="dock">
+    <button class="dock-btn" data-rep="vol_down" aria-label="Volume down"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 12h4"/></svg></button>
+    <button class="dock-btn" id="muteBtn" aria-label="Mute"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="m17 9 4 6M21 9l-4 6"/></svg></button>
+    <button class="dock-btn" data-rep="vol_up" aria-label="Volume up"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 12h4M19 10v4"/></svg></button>
+    <span class="dock-sep"></span>
+    <button class="dock-btn" data-act="previous" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M6 5v14"/><path d="M19 5 9 12l10 7z"/></svg></button>
+    <button class="dock-btn" id="playBtn" aria-label="Play / pause"><svg viewBox="0 0 24 24"><path d="M6 5v14l7-7z"/><path d="M16 6v12M20 6v12"/></svg></button>
+    <button class="dock-btn" data-act="next" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M18 5v14"/><path d="M5 5l10 7-10 7z"/></svg></button>
+    <span class="dock-sep"></span>
+    <button class="dock-btn" id="kbBtn" aria-label="Type text"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h1M11 10h1M15 10h2M7 14h10"/></svg></button>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- keyboard sheet -->
+  <div class="sheet-backdrop hidden" id="kbSheet">
+    <div class="sheet">
+      <div class="sheet-head"><h2>Type on TV</h2><button class="x-btn" data-close>Done</button></div>
+      <p class="muted">Focus a text box on the console first, then send.</p>
+      <textarea id="kbText" rows="2" placeholder="Search, password-free text, URLs…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+      <button class="primary" id="kbSend">Send to console</button>
+    </div>
+  </div>
+
+  <!-- settings sheet -->
+  <div class="sheet-backdrop hidden" id="setSheet">
+    <div class="sheet">
+      <div class="sheet-head"><h2>Settings</h2><button class="x-btn" data-close>Done</button></div>
+
+      <label class="field">
+        <span>Remote PIN</span>
+        <input id="pinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="The APP_PIN you set">
+      </label>
+      <button class="secondary" id="pinSave">Save PIN</button>
+
+      <div class="block">
+        <div class="row"><span>Microsoft account</span><span class="badge" id="linkBadge">checking…</span></div>
+        <a class="primary as-btn" id="linkBtn" href="#">Sign in with Microsoft</a>
+        <p class="muted small">Tip: do this once in regular Safari. The login lives on your Worker, so the home-screen app picks it up automatically.</p>
+      </div>
+
+      <div class="block">
+        <div class="row"><span>Console</span><button class="link" id="refreshConsoles">Refresh</button></div>
+        <div id="consoleList" class="console-list"><p class="muted small">Sign in to load consoles.</p></div>
+      </div>
+
+      <div class="block danger-zone">
+        <button class="secondary" id="rebootBtn">Restart console</button>
+        <button class="secondary" id="offBtn">Turn console off</button>
+        <button class="ghost" id="unlinkBtn">Unlink Microsoft account</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

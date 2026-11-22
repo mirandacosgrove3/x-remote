@@ -1,0 +1,9 @@
+{
+  "name": "couch-remote",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev --var MOCK_XBOX:1 --var APP_PIN:1234",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": { "wrangler": "^4" }
+}

@@ -1,0 +1,20 @@
+{
+  // Change "name" if you want a different URL: https://<name>.<your-subdomain>.workers.dev
+  "name": "couch-remote",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "TOKENS",
+      // Paste the id printed by: npx wrangler kv namespace create TOKENS
+      "id": "PASTE_KV_ID_HERE"
+    }
+  ],
+  "vars": {
+    "MOCK_XBOX": "0"
+  }
+}
