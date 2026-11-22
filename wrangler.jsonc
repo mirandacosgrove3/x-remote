@@ -1,6 +1,6 @@
 {
   // Change "name" if you want a different URL: https://<name>.<your-subdomain>.workers.dev
-  "name": "couch-remote",
+  "name": "x-remote",
   "main": "src/worker.js",
   "workers_dev": true,
   "compatibility_date": "2025-09-01",
