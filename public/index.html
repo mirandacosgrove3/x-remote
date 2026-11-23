@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/icon-180.png">
 <link rel="icon" href="/icon-192.png">
 <link rel="stylesheet" href="/app.css">
-<title>X-drsS v11</title>
+<title>X-drsS v12</title>
 </head>
 <body>
 <div id="app">
@@ -20,7 +20,7 @@
   <!-- ===== status header ===== -->
   <header class="hud">
     <div class="title">
-      <div class="title-main">X-drsS<span class="ver">v11</span></div>
+      <div class="title-main">X-drsS<span class="ver">v12</span></div>
     </div>
     <button class="link-box" id="consoleBtn" aria-label="Console and settings">
       <span class="lb-row"><span class="lb-key">UNIT</span><span class="lb-val" id="consoleName">NO SIGNAL</span></span>
@@ -62,17 +62,17 @@
         <path d="M258 100h16M258 106h16M258 112h16" class="glyph"/>
       </g>
 
-      <g class="btn" data-act="key:LeftTrigger" aria-label="Left trigger">
+      <g class="btn" data-act="key:LeftTrigger" data-shoulder="LT" aria-label="Left trigger">
         <path class="shape" d="M21 124c0-10 7-13 13-7 14 16 28 27 45 33 6 2 10 6 10 12v6c0 7-4 12-11 12H32c-7 0-11-5-11-12z"/>
       </g>
-      <g class="btn" data-act="key:RightTrigger" aria-label="Right trigger">
+      <g class="btn" data-act="key:RightTrigger" data-shoulder="RT" aria-label="Right trigger">
         <path class="shape" d="M339 124c0-10-7-13-13-7-14 16-28 27-45 33-6 2-10 6-10 12v6c0 7 4 12 11 12h46c7 0 11-5 11-12z"/>
       </g>
 
-      <g class="btn" data-act="key:LeftShoulder" aria-label="Left bumper">
+      <g class="btn" data-act="key:LeftShoulder" data-shoulder="LB" aria-label="Left bumper">
         <rect x="21" y="191" width="68" height="23" rx="11.5" class="shape"/>
       </g>
-      <g class="btn" data-act="key:RightShoulder" aria-label="Right bumper">
+      <g class="btn" data-act="key:RightShoulder" data-shoulder="RB" aria-label="Right bumper">
         <rect x="271" y="191" width="68" height="23" rx="11.5" class="shape"/>
       </g>
 
@@ -141,6 +141,12 @@
         <button class="q" id="muteBtn"><span id="muteTxt">MUTE</span></button>
         <button class="q" id="playBtn">PLAY/PAUSE</button>
         <button class="q" id="kbBtn">TYPE</button>
+      </div>
+
+      <div class="row"><span>TRIGGERS + BUMPERS</span></div>
+      <div class="seg2" id="trigMode">
+        <button data-mode="buttons">CONTROLLER<small>LT RT LB RB</small></button>
+        <button data-mode="media">MEDIA<small>REW FF PREV NEXT</small></button>
       </div>
 
       <label class="field">

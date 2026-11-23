@@ -29,7 +29,7 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 /* ===== header ===== */
 .hud { display: flex; align-items: stretch; gap: 10px; }
 .title { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
-.title-main { font-family: var(--serif); font-weight: 900; font-size: 44px; line-height: .85; color: var(--m);
+.title-main { white-space: nowrap; font-family: var(--serif); font-weight: 900; font-size: 44px; line-height: .85; color: var(--m);
   transform: scaleX(.74); transform-origin: left; letter-spacing: -.01em; text-shadow: 0 0 12px rgba(255,26,140,.45); }
 .title-sub { font-size: 8.5px; letter-spacing: .14em; color: var(--muted); margin-top: 6px; white-space: nowrap; }
 .title-sub .jp { color: var(--m); margin-left: 4px; }
@@ -149,3 +149,8 @@ textarea, input { touch-action: manipulation; }
 .log { margin: 0; max-height: 150px; overflow: auto; font: 10.5px/1.5 var(--mono); color: var(--text); border: 1px solid var(--m-line); padding: 8px; white-space: pre-wrap; word-break: break-all; -webkit-user-select: text; user-select: text; }
 .log .bad { color: var(--amber); }
 .title-main .ver { font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .1em; color: var(--muted); margin-left: 8px; text-shadow: none; vertical-align: top; }
+.seg2 { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--m-line); }
+.seg2 button { padding: 10px 0 8px; font-family: var(--serif); font-weight: 900; font-size: 15px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.seg2 button + button { border-left: 1px solid var(--m-line); }
+.seg2 small { font: 9px var(--mono); letter-spacing: .14em; }
+.seg2 button.on { background: var(--m); color: #000; }
