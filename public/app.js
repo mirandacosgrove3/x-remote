@@ -55,28 +55,25 @@
     return navigator.onLine ? `Error: ${e.message}` : "You're offline";
   }
 
-  // Commands go out one at a time so D-pad presses stay in order.
-  let chain = Promise.resolve();
-  let pending = 0;
+  // Each press goes out immediately (no waiting on the previous round trip).
+  // Only a runaway backlog (e.g. a stuck hold-repeat) gets trimmed.
+  let inflight = 0;
   function send(action, value) {
     if (!consoleSel) { toast("Pick a console in Settings", true); openSettings(); return; }
-    if (pending > 4) return; // don't let held buttons build a backlog
-    pending++;
-    chain = chain.then(async () => {
-      const t0 = performance.now();
-      try {
-        const res = await api("/api/cmd", { method: "POST", body: JSON.stringify({ consoleId: consoleSel.id, action, value }) });
+    if (inflight > 10) return;
+    inflight++;
+    const t0 = performance.now();
+    return api("/api/cmd", { method: "POST", body: JSON.stringify({ consoleId: consoleSel.id, action, value }) })
+      .then((res) => {
         $("#ping").textContent = `${String(Math.round(performance.now() - t0)).padStart(3, "0")}ms`;
         if (res.ok === false) toast(/Trigger|Shoulder/.test(action) ? "CONSOLE IGNORED " + action.slice(4).toUpperCase() : "Console reported an error", true);
         return res;
-      } catch (e) {
+      })
+      .catch((e) => {
         if (/Trigger|Shoulder/.test(action) && e.code === "command_failed") toast("CONSOLE REJECTED " + action.slice(4).toUpperCase() + ": cloud API may not support it", true);
         else toast(explain(e), true);
-      } finally {
-        pending--;
-      }
-    });
-    return chain;
+      })
+      .finally(() => { inflight--; });
   }
 
   // ---- press feedback + simple buttons ----
@@ -315,6 +312,14 @@
   }
   confirmTap($("#rebootBtn"), "CONFIRM RESTART", () => { send("reboot"); toast("RESTART SEQUENCE"); });
   confirmTap($("#offBtn"), "CONFIRM SHUTDOWN", () => { send("power_off"); toast("SHUTDOWN SEQUENCE"); });
+  confirmTap($("#resetBtn"), "CONFIRM RESET", async () => {
+    toast("RESETTING");
+    try { await api("/api/reset", { method: "POST" }); } catch {}
+    try { const regs = await navigator.serviceWorker?.getRegistrations(); await Promise.all((regs || []).map((r) => r.unregister())); } catch {}
+    try { const keys = await caches.keys(); await Promise.all(keys.map((k) => caches.delete(k))); } catch {}
+    store.del("mode");
+    location.replace("/?r=" + Date.now());
+  });
   confirmTap($("#unlinkBtn"), "CONFIRM SEVER", async () => {
     try { await api("/api/unlink", { method: "POST" }); toast("LINK SEVERED"); refreshStatus(); } catch (e) { toast(explain(e), true); }
   });
@@ -322,6 +327,7 @@
   // ---- boot ----
   paintConsole();
   const params = new URLSearchParams(location.search);
+  if (params.get("r")) { history.replaceState(null, "", "/"); toast("RESET COMPLETE"); }
   if (params.get("linked")) {
     history.replaceState(null, "", "/");
     toast("MICROSOFT LINK ESTABLISHED");

@@ -66,6 +66,13 @@ export default {
         if (url.pathname === "/api/status" && request.method === "GET") return apiStatus(env);
         if (url.pathname === "/api/consoles" && request.method === "GET") return apiConsoles(env);
         if (url.pathname === "/api/cmd" && request.method === "POST") return apiCmd(request, env);
+        if (url.pathname === "/api/reset" && request.method === "POST") {
+          // fresh Xbox token + command session; keeps the Microsoft link
+          await env.TOKENS.delete("xsts");
+          memXsts = null;
+          sessionId = null;
+          return json({ ok: true });
+        }
         if (url.pathname === "/api/unlink" && request.method === "POST") {
           await env.TOKENS.delete("refresh_token");
           await env.TOKENS.delete("xsts");
