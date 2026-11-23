@@ -59,7 +59,7 @@
   // Only a runaway backlog (e.g. a stuck hold-repeat) gets trimmed.
   let inflight = 0;
   const LOG = [];
-  const SHORT = { "key:LeftTrigger": "LT", "key:RightTrigger": "RT", "key:LeftShoulder": "LB", "key:RightShoulder": "RB" };
+  const SHORT = { rewind: "LT·REW", ff: "RT·FF", previous: "LB·PREV", next: "RB·NEXT" };
   function logLine(action, ok, ms, detail) {
     const t = new Date().toTimeString().slice(0, 8);
     const name = (SHORT[action] || action.replace("key:", "")).padEnd(8);
@@ -78,12 +78,12 @@
         const ms = Math.round(performance.now() - t0);
         logLine(action, res.ok !== false, ms, res.ok === false && res.status ? JSON.stringify(res.status).slice(0, 120) : "");
         $("#ping").textContent = `${String(Math.round(performance.now() - t0)).padStart(3, "0")}ms`;
-        if (res.ok === false) toast(/Trigger|Shoulder/.test(action) ? "CONSOLE IGNORED " + action.slice(4).toUpperCase() : "Console reported an error", true);
+        if (res.ok === false) toast(/^(ff|rewind)$/.test(action) ? "CONSOLE IGNORED " + action.toUpperCase() : "Console reported an error", true);
         return res;
       })
       .catch((e) => {
         logLine(action, false, Math.round(performance.now() - t0), `${e.code || ""} ${e.message || ""}`.trim().slice(0, 160));
-        if (/Trigger|Shoulder/.test(action) && e.code === "command_failed") toast("CONSOLE REJECTED " + action.slice(4).toUpperCase() + ": cloud API may not support it", true);
+        if (/^(ff|rewind)$/.test(action) && e.code === "command_failed") toast("CONSOLE REJECTED " + action.toUpperCase() + ": cloud API may not support it", true);
         else toast(explain(e), true);
       })
       .finally(() => { inflight--; });

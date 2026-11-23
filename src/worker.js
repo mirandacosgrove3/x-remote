@@ -40,6 +40,8 @@ function buildCommand(action, value) {
     case "play": return ["Media", "Play"];
     case "pause": return ["Media", "Pause"];
     case "next": return ["Media", "Next"];
+    case "ff": return ["Media", "FastForward"];
+    case "rewind": return ["Media", "Rewind"];
     case "previous": return ["Media", "Previous"];
     case "text":
       if (typeof value !== "string" || !value || value.length > 500) return null;
