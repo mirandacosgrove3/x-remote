@@ -67,10 +67,11 @@
       try {
         const res = await api("/api/cmd", { method: "POST", body: JSON.stringify({ consoleId: consoleSel.id, action, value }) });
         $("#ping").textContent = `${String(Math.round(performance.now() - t0)).padStart(3, "0")}ms`;
-        if (res.ok === false) toast("Console reported an error", true);
+        if (res.ok === false) toast(/Trigger|Shoulder/.test(action) ? "CONSOLE IGNORED " + action.slice(4).toUpperCase() : "Console reported an error", true);
         return res;
       } catch (e) {
-        toast(explain(e), true);
+        if (/Trigger|Shoulder/.test(action) && e.code === "command_failed") toast("CONSOLE REJECTED " + action.slice(4).toUpperCase() + ": cloud API may not support it", true);
+        else toast(explain(e), true);
       } finally {
         pending--;
       }

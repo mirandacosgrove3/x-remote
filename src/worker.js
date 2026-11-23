@@ -18,7 +18,9 @@ const SG_HEADERS = {
 };
 
 // Every action the remote is allowed to send. Anything else is rejected.
-const KEYS = ["A", "B", "X", "Y", "Up", "Down", "Left", "Right", "Menu", "View", "Guide"];
+const KEYS = ["A", "B", "X", "Y", "Up", "Down", "Left", "Right", "Menu", "View", "Guide",
+  // Not in the documented list. Sent experimentally; the console may reject them.
+  "LeftTrigger", "RightTrigger", "LeftShoulder", "RightShoulder"];
 function buildCommand(action, value) {
   if (action.startsWith("key:")) {
     const k = action.slice(4);

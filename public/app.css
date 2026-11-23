@@ -135,7 +135,9 @@ textarea:focus, input:focus { border-color: var(--m); box-shadow: 0 0 0 1px var(
 @media (max-height: 700px) { .title-main { font-size: 36px; } .rule { display: none; } }
 
 /* quick controls (inside settings) */
-.quick { display: grid; grid-template-columns: 1fr 1fr 1.4fr 1fr; border: 1px solid var(--m-line); }
+.quick { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--m-line); }
+.quick .q:nth-child(n+4) { border-top: 1px solid var(--m-line); }
+.quick .q:nth-child(4) { border-left: 0; }
 .q { padding: 12px 0; font-family: var(--serif); font-weight: 900; font-size: 15px; color: var(--m); border-left: 1px solid var(--m-line); white-space: nowrap; }
 .q:first-child { border-left: 0; }
 .q.pressed { background: var(--m); color: #000; }
