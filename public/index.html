@@ -62,10 +62,10 @@
         <path d="M258 100h16M258 106h16M258 112h16" class="glyph"/>
       </g>
 
-      <g class="btn" data-rep="key:LeftTrigger" aria-label="Left trigger">
+      <g class="btn" data-act="key:LeftTrigger" aria-label="Left trigger">
         <path class="shape" d="M21 124c0-10 7-13 13-7 14 16 28 27 45 33 6 2 10 6 10 12v6c0 7-4 12-11 12H32c-7 0-11-5-11-12z"/>
       </g>
-      <g class="btn" data-rep="key:RightTrigger" aria-label="Right trigger">
+      <g class="btn" data-act="key:RightTrigger" aria-label="Right trigger">
         <path class="shape" d="M339 124c0-10-7-13-13-7-14 16-28 27-45 33-6 2-10 6-10 12v6c0 7 4 12 11 12h46c7 0 11-5 11-12z"/>
       </g>
 
@@ -161,6 +161,8 @@
       </div>
 
       <div class="block">
+        <div class="row"><span>COMMAND LOG</span><button class="link" id="copyLog">COPY</button></div>
+        <pre class="log" id="log">no commands yet</pre>
         <button class="secondary" id="resetBtn">RESET APP</button>
         <button class="secondary" id="rebootBtn">RESTART UNIT</button>
         <button class="secondary" id="offBtn">SHUT DOWN UNIT</button>

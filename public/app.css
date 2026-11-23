@@ -146,3 +146,5 @@ textarea:focus, input:focus { border-color: var(--m); box-shadow: 0 0 0 1px var(
 
 .deck, #pad, #pad * { touch-action: none; }
 textarea, input { touch-action: manipulation; }
+.log { margin: 0; max-height: 150px; overflow: auto; font: 10.5px/1.5 var(--mono); color: var(--text); border: 1px solid var(--m-line); padding: 8px; white-space: pre-wrap; word-break: break-all; -webkit-user-select: text; user-select: text; }
+.log .bad { color: var(--amber); }

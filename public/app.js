@@ -58,6 +58,16 @@
   // Each press goes out immediately (no waiting on the previous round trip).
   // Only a runaway backlog (e.g. a stuck hold-repeat) gets trimmed.
   let inflight = 0;
+  const LOG = [];
+  const SHORT = { "key:LeftTrigger": "LT", "key:RightTrigger": "RT", "key:LeftShoulder": "LB", "key:RightShoulder": "RB" };
+  function logLine(action, ok, ms, detail) {
+    const t = new Date().toTimeString().slice(0, 8);
+    const name = (SHORT[action] || action.replace("key:", "")).padEnd(8);
+    LOG.unshift({ bad: !ok, text: `${t} ${name} ${ok ? "OK " : "ERR"} ${String(ms).padStart(4)}ms${detail ? "  " + detail : ""}` });
+    LOG.length = Math.min(LOG.length, 40);
+    const el = $("#log");
+    if (el) el.innerHTML = LOG.map((l) => `<span class="${l.bad ? "bad" : ""}">${l.text.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]))}</span>`).join("\n");
+  }
   function send(action, value) {
     if (!consoleSel) { toast("Pick a console in Settings", true); openSettings(); return; }
     if (inflight > 10) return;
@@ -65,11 +75,14 @@
     const t0 = performance.now();
     return api("/api/cmd", { method: "POST", body: JSON.stringify({ consoleId: consoleSel.id, action, value }) })
       .then((res) => {
+        const ms = Math.round(performance.now() - t0);
+        logLine(action, res.ok !== false, ms, res.ok === false && res.status ? JSON.stringify(res.status).slice(0, 120) : "");
         $("#ping").textContent = `${String(Math.round(performance.now() - t0)).padStart(3, "0")}ms`;
         if (res.ok === false) toast(/Trigger|Shoulder/.test(action) ? "CONSOLE IGNORED " + action.slice(4).toUpperCase() : "Console reported an error", true);
         return res;
       })
       .catch((e) => {
+        logLine(action, false, Math.round(performance.now() - t0), `${e.code || ""} ${e.message || ""}`.trim().slice(0, 160));
         if (/Trigger|Shoulder/.test(action) && e.code === "command_failed") toast("CONSOLE REJECTED " + action.slice(4).toUpperCase() + ": cloud API may not support it", true);
         else toast(explain(e), true);
       })
@@ -312,6 +325,9 @@
   }
   confirmTap($("#rebootBtn"), "CONFIRM RESTART", () => { send("reboot"); toast("RESTART SEQUENCE"); });
   confirmTap($("#offBtn"), "CONFIRM SHUTDOWN", () => { send("power_off"); toast("SHUTDOWN SEQUENCE"); });
+  $("#copyLog").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(LOG.map((l) => l.text).join("\n")); toast("LOG COPIED"); } catch { toast("Copy failed: long-press the log instead", true); }
+  });
   confirmTap($("#resetBtn"), "CONFIRM RESET", async () => {
     toast("RESETTING");
     try { await api("/api/reset", { method: "POST" }); } catch {}
