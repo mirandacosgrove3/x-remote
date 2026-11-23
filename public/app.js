@@ -85,8 +85,24 @@
     setTimeout(() => el.classList.remove("pressed"), 140);
   }
   $$("[data-act]").forEach((el) => {
-    el.addEventListener("click", () => { flash(el); send(el.dataset.act); });
+    if (el.closest("#pad")) {
+      el.addEventListener("pointerdown", (e) => { e.preventDefault(); flash(el); send(el.dataset.act); });
+    } else {
+      el.addEventListener("click", () => { flash(el); send(el.dataset.act); });
+    }
   });
+
+  // iOS ignores user-scalable=no: block pinch and double-tap zoom, which were shifting the layout.
+  ["gesturestart", "gesturechange", "gestureend"].forEach((t) => document.addEventListener(t, (e) => e.preventDefault(), { passive: false }));
+  document.addEventListener("dblclick", (e) => e.preventDefault(), { passive: false });
+  let lastEnd = 0;
+  document.addEventListener("touchend", (e) => {
+    const now = Date.now();
+    if (now - lastEnd < 350 && !e.target.closest("textarea, input, .sheet")) e.preventDefault();
+    lastEnd = now;
+  }, { passive: false });
+  // if the keyboard sheet nudged the page, snap it back
+  window.addEventListener("scroll", () => { if (window.scrollY) window.scrollTo(0, 0); });
 
   // ---- buttons that repeat while held (D-pad, volume) ----
   $$("[data-rep]").forEach((el) => {
